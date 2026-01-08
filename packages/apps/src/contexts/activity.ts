@@ -228,7 +228,7 @@ export class ActivityContext<T extends Activity = Activity, TExtraCtx extends {}
       }
     }
 
-    return this.send(activity, undefined, isTargeted);
+    return this.send(activity, this.ref, isTargeted);
   }
 
   async signin(options?: Partial<SignInOptions>) {
