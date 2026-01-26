@@ -405,6 +405,16 @@ export class App<TPlugin extends IPlugin = IPlugin> {
       throw new Error('app not started');
     }
 
+    const params = toActivityParams(activity);
+
+    // Validate targeted messages in proactive context
+    if (params.type === 'message' && 'isTargeted' in params && params.isTargeted) {
+      if (!params.targetedRecipientId) {
+        throw new Error('Targeted messages sent proactively must specify an explicit recipient ID using withTargetedRecipient(recipientId)');
+      }
+      params.recipient = { id: params.targetedRecipientId, name: '', role: 'user' };
+    }
+
     const ref: ConversationReference = {
       channelId: 'msteams',
       serviceUrl: this.api.serviceUrl,
@@ -419,7 +429,7 @@ export class App<TPlugin extends IPlugin = IPlugin> {
       },
     };
 
-    const res = await this.http.send(toActivityParams(activity), ref);
+    const res = await this.http.send(params, ref);
     return res;
   }
 

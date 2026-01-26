@@ -276,4 +276,51 @@ describe('MessageActivity', () => {
       expect(mention).toBeUndefined();
     });
   });
+
+  describe('withTargetedRecipient', () => {
+    it('should set isTargeted to true when called with true', () => {
+      const activity = new MessageActivity('hello').withTargetedRecipient(true);
+
+      expect(activity.isTargeted).toBe(true);
+      expect(activity.targetedRecipientId).toBeUndefined();
+    });
+
+    it('should set isTargeted to true when called with recipient id', () => {
+      const activity = new MessageActivity('hello').withTargetedRecipient('user-123');
+
+      expect(activity.isTargeted).toBe(true);
+      expect(activity.targetedRecipientId).toBe('user-123');
+    });
+
+    it('should be chainable with other methods', () => {
+      const activity = new MessageActivity('hello')
+        .withImportance('high')
+        .withTargetedRecipient('user-456')
+        .withDeliveryMode('notification');
+
+      expect(activity.text).toBe('hello');
+      expect(activity.importance).toBe('high');
+      expect(activity.deliveryMode).toBe('notification');
+      expect(activity.isTargeted).toBe(true);
+      expect(activity.targetedRecipientId).toBe('user-456');
+    });
+
+    it('should preserve isTargeted and targetedRecipientId when using from()', () => {
+      const original = new MessageActivity('test')
+        .withTargetedRecipient('user-789')
+        .toInterface();
+
+      const restored = MessageActivity.from(original);
+
+      expect(restored.isTargeted).toBe(true);
+      expect(restored.targetedRecipientId).toBe('user-789');
+    });
+
+    it('should not set targetedRecipientId when called with false', () => {
+      const activity = new MessageActivity('hello').withTargetedRecipient(false);
+
+      expect(activity.isTargeted).toBe(true);
+      expect(activity.targetedRecipientId).toBeUndefined();
+    });
+  });
 });

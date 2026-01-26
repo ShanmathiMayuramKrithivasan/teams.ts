@@ -162,14 +162,29 @@ export class HttpPlugin implements ISender {
       conversation: ref.conversation,
     };
 
+    // Check if this is a targeted message
+    const isTargeted = 'isTargeted' in activity && activity.isTargeted === true;
+
+    // UPDATE: activity has an id
     if (activity.id) {
-      const res = await api.conversations
-        .activities(ref.conversation.id)
-        .update(activity.id, activity);
+      const res = isTargeted
+        ? await api.conversations.activities(ref.conversation.id).updateTargeted(activity.id, activity)
+        : await api.conversations.activities(ref.conversation.id).update(activity.id, activity);
       return { ...activity, ...res };
     }
 
-    const res = await api.conversations.activities(ref.conversation.id).create(activity);
+    // REPLY: activity has replyToId
+    if (activity.replyToId) {
+      const res = isTargeted
+        ? await api.conversations.activities(ref.conversation.id).replyTargeted(activity.replyToId, activity)
+        : await api.conversations.activities(ref.conversation.id).reply(activity.replyToId, activity);
+      return { ...activity, ...res };
+    }
+
+    // CREATE: new activity
+    const res = isTargeted
+      ? await api.conversations.activities(ref.conversation.id).createTargeted(activity)
+      : await api.conversations.activities(ref.conversation.id).create(activity);
     return { ...activity, ...res };
   }
 

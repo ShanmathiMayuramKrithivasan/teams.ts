@@ -213,7 +213,18 @@ export class ActivityContext<T extends Activity = Activity, TExtraCtx extends {}
   }
 
   async send(activity: ActivityLike, conversationRef?: ConversationReference) {
-    return await this._plugin.send(toActivityParams(activity), conversationRef ?? this.ref);
+    const params = toActivityParams(activity);
+
+    // For targeted message creates (not updates), set the recipient
+    if (params.type === 'message' && 'isTargeted' in params && params.isTargeted && !params.id) {
+      const recipientId = params.targetedRecipientId ?? this.activity.from.id;
+      params.recipient = params.targetedRecipientId
+        ? { id: recipientId, name: '', role: 'user' }
+        : this.activity.from;
+      params.targetedRecipientId = recipientId;
+    }
+
+    return await this._plugin.send(params, conversationRef ?? this.ref);
   }
 
   async reply(activity: ActivityLike) {
