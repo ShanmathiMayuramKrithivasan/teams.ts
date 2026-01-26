@@ -115,7 +115,7 @@ app.on('message', async ({ send, reply, activity, api }) => {
   }
 
   // Default
-  await reply(`Say "help" for available commands.`);
+  await reply('Say "help" for available commands.');
 });
 
 app.on('install.add', async ({ send }) => {
