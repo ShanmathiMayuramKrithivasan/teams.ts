@@ -408,11 +408,10 @@ export class App<TPlugin extends IPlugin = IPlugin> {
     const params = toActivityParams(activity);
 
     // Validate targeted messages in proactive context
-    if (params.type === 'message' && 'isTargeted' in params && params.isTargeted) {
-      if (!params.targetedRecipientId) {
+    if (params.type === 'message' && params.isTargeted) {
+      if (!params.recipient) {
         throw new Error('Targeted messages sent proactively must specify an explicit recipient ID using withTargetedRecipient(recipientId)');
       }
-      params.recipient = { id: params.targetedRecipientId, name: '', role: 'user' };
     }
 
     const ref: ConversationReference = {

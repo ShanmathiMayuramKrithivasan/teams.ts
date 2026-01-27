@@ -244,7 +244,6 @@ describe('ActivityContext', () => {
             text: 'Secret message',
             type: 'message',
             isTargeted: true,
-            targetedRecipientId: 'explicit-user-id',
             recipient: { id: 'explicit-user-id', name: '', role: 'user' },
           }),
           mockRef

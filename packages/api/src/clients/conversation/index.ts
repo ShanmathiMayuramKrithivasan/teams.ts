@@ -77,8 +77,6 @@ export class ConversationClient {
       createTargeted: (params: ActivityParams) => this._activities.createTargeted(conversationId, params),
       updateTargeted: (id: string, params: ActivityParams) =>
         this._activities.updateTargeted(conversationId, id, params),
-      replyTargeted: (id: string, params: ActivityParams) =>
-        this._activities.replyTargeted(conversationId, id, params),
       deleteTargeted: (id: string) => this._activities.deleteTargeted(conversationId, id),
     };
   }

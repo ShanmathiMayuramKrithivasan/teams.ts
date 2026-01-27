@@ -282,14 +282,14 @@ describe('MessageActivity', () => {
       const activity = new MessageActivity('hello').withTargetedRecipient(true);
 
       expect(activity.isTargeted).toBe(true);
-      expect(activity.targetedRecipientId).toBeUndefined();
+      expect(activity.recipient).toBeUndefined();
     });
 
-    it('should set isTargeted to true when called with recipient id', () => {
+    it('should set isTargeted to true and recipient when called with recipient id', () => {
       const activity = new MessageActivity('hello').withTargetedRecipient('user-123');
 
       expect(activity.isTargeted).toBe(true);
-      expect(activity.targetedRecipientId).toBe('user-123');
+      expect(activity.recipient).toEqual({ id: 'user-123', name: '', role: 'user' });
     });
 
     it('should be chainable with other methods', () => {
@@ -302,10 +302,10 @@ describe('MessageActivity', () => {
       expect(activity.importance).toBe('high');
       expect(activity.deliveryMode).toBe('notification');
       expect(activity.isTargeted).toBe(true);
-      expect(activity.targetedRecipientId).toBe('user-456');
+      expect(activity.recipient).toEqual({ id: 'user-456', name: '', role: 'user' });
     });
 
-    it('should preserve isTargeted and targetedRecipientId when using from()', () => {
+    it('should preserve isTargeted and recipient when using from()', () => {
       const original = new MessageActivity('test')
         .withTargetedRecipient('user-789')
         .toInterface();
@@ -313,14 +313,14 @@ describe('MessageActivity', () => {
       const restored = MessageActivity.from(original);
 
       expect(restored.isTargeted).toBe(true);
-      expect(restored.targetedRecipientId).toBe('user-789');
+      expect(restored.recipient).toEqual({ id: 'user-789', name: '', role: 'user' });
     });
 
-    it('should not set targetedRecipientId when called with false', () => {
-      const activity = new MessageActivity('hello').withTargetedRecipient(false);
+    it('should not set recipient when called with true', () => {
+      const activity = new MessageActivity('hello').withTargetedRecipient(true);
 
       expect(activity.isTargeted).toBe(true);
-      expect(activity.targetedRecipientId).toBeUndefined();
+      expect(activity.recipient).toBeUndefined();
     });
   });
 });

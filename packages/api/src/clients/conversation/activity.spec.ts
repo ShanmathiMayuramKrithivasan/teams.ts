@@ -141,24 +141,5 @@ describe('ConversationActivityClient', () => {
         '/v3/conversations/1/activities/2?isTargetedActivity=true'
       );
     });
-
-    it('should reply to targeted activity', async () => {
-      const client = new ConversationActivityClient('');
-      const spy = jest.spyOn(client.http, 'post').mockResolvedValueOnce({});
-
-      await client.replyTargeted('1', '2', {
-        type: 'message',
-        text: 'hi reply',
-      });
-
-      expect(spy).toHaveBeenCalledWith(
-        '/v3/conversations/1/activities/2?isTargetedActivity=true',
-        {
-          type: 'message',
-          text: 'hi reply',
-          replyToId: '2',
-        }
-      );
-    });
   });
 });

@@ -87,15 +87,6 @@ export class ConversationActivityClient {
     return res.data;
   }
 
-  async replyTargeted(conversationId: string, id: string, params: ActivityParams) {
-    params.replyToId = id;
-    const res = await this.http.post<Resource>(
-      `${this.serviceUrl}/v3/conversations/${conversationId}/activities/${id}?isTargetedActivity=true`,
-      params
-    );
-    return res.data;
-  }
-
   async deleteTargeted(conversationId: string, id: string) {
     const res = await this.http.delete<void>(
       `${this.serviceUrl}/v3/conversations/${conversationId}/activities/${id}?isTargetedActivity=true`

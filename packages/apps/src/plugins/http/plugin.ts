@@ -165,7 +165,6 @@ export class HttpPlugin implements ISender {
     // Check if this is a targeted message
     const isTargeted = 'isTargeted' in activity && activity.isTargeted === true;
 
-    // UPDATE: activity has an id
     if (activity.id) {
       const res = isTargeted
         ? await api.conversations.activities(ref.conversation.id).updateTargeted(activity.id, activity)
@@ -173,15 +172,6 @@ export class HttpPlugin implements ISender {
       return { ...activity, ...res };
     }
 
-    // REPLY: activity has replyToId
-    if (activity.replyToId) {
-      const res = isTargeted
-        ? await api.conversations.activities(ref.conversation.id).replyTargeted(activity.replyToId, activity)
-        : await api.conversations.activities(ref.conversation.id).reply(activity.replyToId, activity);
-      return { ...activity, ...res };
-    }
-
-    // CREATE: new activity
     const res = isTargeted
       ? await api.conversations.activities(ref.conversation.id).createTargeted(activity)
       : await api.conversations.activities(ref.conversation.id).create(activity);

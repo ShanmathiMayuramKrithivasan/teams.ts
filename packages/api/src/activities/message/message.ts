@@ -87,11 +87,6 @@ export interface IMessageActivity extends IActivity<'message'> {
   isTargeted?: boolean;
 
   /**
-   * The recipient ID for targeted messages. When set, the message will only be visible to this user.
-   */
-  targetedRecipientId?: string;
-
-  /**
    * remove "\<at>...\</at>" text from an activity
    */
   stripMentionsText(options?: StripMentionsTextOptions): IMessageActivity;
@@ -177,11 +172,6 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
    * Indicates if this is a targeted message visible only to a specific recipient.
    */
   isTargeted?: boolean;
-
-  /**
-   * The recipient ID for targeted messages. When set, the message will only be visible to this user.
-   */
-  targetedRecipientId?: string;
 
   constructor(text: string = '', value: Omit<Partial<IMessageActivity>, 'type'> = {}) {
     super({
@@ -408,10 +398,10 @@ export class MessageActivity extends Activity<'message'> implements IMessageActi
    * @remarks When using `true`, this must be sent within an activity context (not proactively).
    *          For proactive sends, you must provide an explicit recipient ID.
    */
-  withTargetedRecipient(recipientOrFlag: boolean | string) {
+  withTargetedRecipient(recipientOrFlag: true | string) {
     this.isTargeted = true;
     if (typeof recipientOrFlag === 'string') {
-      this.targetedRecipientId = recipientOrFlag;
+      this.recipient = { id: recipientOrFlag, name: '', role: 'user' };
     }
     return this;
   }

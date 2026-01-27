@@ -215,13 +215,12 @@ export class ActivityContext<T extends Activity = Activity, TExtraCtx extends {}
   async send(activity: ActivityLike, conversationRef?: ConversationReference) {
     const params = toActivityParams(activity);
 
-    // For targeted message creates (not updates), set the recipient
-    if (params.type === 'message' && 'isTargeted' in params && params.isTargeted && !params.id) {
-      const recipientId = params.targetedRecipientId ?? this.activity.from.id;
-      params.recipient = params.targetedRecipientId
-        ? { id: recipientId, name: '', role: 'user' }
-        : this.activity.from;
-      params.targetedRecipientId = recipientId;
+    // For targeted send, set the recipient if not already set.
+    // For targeted update (params.id exists), we dont update recipient since recipient cannot be changed.
+    if (params.type === 'message' && params.isTargeted && !params.id) {
+      if (!params.recipient) {
+        params.recipient = this.activity.from;
+      }
     }
 
     return await this._plugin.send(params, conversationRef ?? this.ref);

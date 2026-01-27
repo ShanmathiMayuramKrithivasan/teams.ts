@@ -61,7 +61,6 @@ app.on('message', async ({ send, reply, activity, api }) => {
         );
         updatedMessage.id = result.id;
         updatedMessage.isTargeted = true; // Mark as targeted for the API URL
-        // Don't set targetedRecipientId - keeps original recipient
 
         await send(updatedMessage);
         console.log('Targeted UPDATE completed');
